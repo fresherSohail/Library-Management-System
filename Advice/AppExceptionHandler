@@ -1,0 +1,48 @@
+package NewLibraryService.LibraryServicedemo.advice;
+
+import NewLibraryService.LibraryServicedemo.exception.BookNotFoundException;
+import NewLibraryService.LibraryServicedemo.exception.UserNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class AppExceptionHandler{
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleIllegalArg(MethodArgumentNotValidException ex){
+        Map<String, String> getMap = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(
+          error->{
+              getMap.put(error.getField(), error.getDefaultMessage());
+          });
+        return getMap;
+    }
+
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseBody
+    public Map<String, String> hanldleUserException(UserNotFoundException ex){
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("Error Message", ex.getMessage());
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(BookNotFoundException.class)
+    public Map<String, String> handleBookException(BookNotFoundException ex){
+        Map<String, String> error = new HashMap<>();
+        error.put("Error Message", ex.getMessage());
+        return error;
+    }
+
+}
