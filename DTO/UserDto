@@ -1,0 +1,105 @@
+package NewLibraryService.LibraryServicedemo.dto;
+
+
+import NewLibraryService.LibraryServicedemo.entity.Book;
+import jakarta.validation.constraints.*;
+
+import java.util.Date;
+import java.util.List;
+
+public class UserDto {
+    @NotNull(message = "This cannot be null")
+    @NotBlank
+    private String name;
+    @Min(7)
+    @Max(70)
+    private int age;
+    @NotNull(message = "This cannot be null")
+    private String address;
+    @Pattern(regexp = "\\d{10}$", message = "Invalid mobile number")
+    private String phoneNo;
+    private Date borrowDate;
+    private Date dueDate;
+    private boolean lateMark;
+    private List<Book> borrow;
+
+    public UserDto(String name, int age, String address, String phoneNo, Date borrowDate, Date dueDate, boolean lateMark, List<Book> borrow) {
+        super();
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.phoneNo = phoneNo;
+        this.borrowDate = borrowDate;
+        this.dueDate = dueDate;
+        this.lateMark = lateMark;
+        this.borrow = borrow;
+    }
+
+    public UserDto(){
+
+    }
+
+    public List<Book> getBorrow() {
+        return borrow;
+    }
+
+    public void setBorrow(List<Book> borrow) {
+        this.borrow = borrow;
+    }
+
+    public boolean isLateMark() {
+        return lateMark;
+    }
+
+    public void setLateMark(boolean lateMark) {
+        this.lateMark = lateMark;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Date getBorrowDate() {
+        return borrowDate;
+    }
+
+    public void setBorrowDate(Date borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
