@@ -1,9 +1,14 @@
-package com.LibraryManagmentSystem.LibraryManagmentSystem.Repository;
+package NewLibraryService.LibraryServicedemo.repositories;
 
+import NewLibraryService.LibraryServicedemo.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Entity.Book;
 
-public interface BookRepository extends JpaRepository<Book, Long>{
+import java.util.List;
+
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+
+    List<Book> findByTitleContains(String title);
 }
