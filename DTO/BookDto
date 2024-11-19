@@ -1,0 +1,68 @@
+package NewLibraryService.LibraryServicedemo.dto;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public class BookDto {
+    @NotNull(message = "This cannot be null")
+    @NotBlank
+    private String title;
+    @NotNull(message = "This cannot be null")
+    @NotBlank
+    private String author;
+    private String isbnNo;
+    private boolean isBorrowed;
+    private UserDto bookCarry;
+
+    public BookDto(){}
+
+    public BookDto(String title, String author, String isbnNo, boolean isBorrowed, UserDto bookCarry) {
+        this.title = title;
+        this.author = author;
+        this.isbnNo = isbnNo;
+        this.isBorrowed = isBorrowed;
+        this.bookCarry = bookCarry;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getIsbnNo() {
+        return isbnNo;
+    }
+
+    public void setIsbnNo(String isbnNo) {
+        this.isbnNo = isbnNo;
+    }
+
+    public UserDto getBookCarry() {
+        return bookCarry;
+    }
+    public void setBookCarry(UserDto bookCarry) {
+        this.bookCarry = bookCarry;
+    }
+
+    public boolean getIsBorrowed(){
+        return isBorrowed;
+    }
+
+    public void setIsBorrowed(boolean isBorrowed){
+    this.isBorrowed = isBorrowed;
+    }
+
+}
