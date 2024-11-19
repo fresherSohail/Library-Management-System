@@ -1,0 +1,11 @@
+package NewLibraryService.LibraryServicedemo.exception;
+
+import NewLibraryService.LibraryServicedemo.dto.BookDto;
+
+public class BookNotFoundException extends RuntimeException{
+
+    public BookNotFoundException(String message){
+        super(message);
+    }
+
+}
