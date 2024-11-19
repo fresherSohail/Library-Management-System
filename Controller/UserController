@@ -1,35 +1,68 @@
-package com.LibraryManagmentSystem.LibraryManagmentSystem.Controller;
+package NewLibraryService.LibraryServicedemo.controllers;
 
-import java.util.*;
-
+import NewLibraryService.LibraryServicedemo.dto.UserDto;
+import NewLibraryService.LibraryServicedemo.entity.Book;
+import NewLibraryService.LibraryServicedemo.entity.User;
+import NewLibraryService.LibraryServicedemo.exception.UserNotFoundException;
+import NewLibraryService.LibraryServicedemo.services.impl.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Entity.User;
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Service.UserService;
-
-import ch.qos.logback.core.joran.spi.HttpUtil.RequestMethod;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
-	
-	@GetMapping
-	public List<User> getAllUser(){
-		return userService.findAllUser();
-	}
-	
-	@PostMapping
-	public User addUser(@RequestBody User user) {
-		return userService.save(user);
-	}
-	
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/user")
+    public List<User> getAllUser(){
+        return userService.findAllUser();
+    }
+
+    @PostMapping("/user")
+    public ResponseEntity<User> createUser(@RequestBody @Valid UserDto userDto){
+        User savedUser = userService.createUser(userDto);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user){
+        User updateUser = userService.updateUser(id, user);
+        return new ResponseEntity<>(updateUser, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUserById(id);
+    }
+
+    @GetMapping("user/{id}")
+    public User getUser(@PathVariable Long id) throws UserNotFoundException{
+        return userService.getUser(id);
+    }
+
+    @GetMapping("/UserSearch/{name}")
+    public ResponseEntity<List<User>> searchByName(@PathVariable String name){
+        List<User> user = userService.searchByUser(name);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{userId}/borrowed-books")
+    public ResponseEntity<List<Book>> getBorrowedBook(@PathVariable Long userId) throws UserNotFoundException {
+        User user = userService.getUser(userId);
+        if(user !=null){
+            return ResponseEntity.ok(user.getBorrow());
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
