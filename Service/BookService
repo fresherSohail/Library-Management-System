@@ -1,85 +1,114 @@
-package com.LibraryManagmentSystem.LibraryManagmentSystem.Service;
+package NewLibraryService.LibraryServicedemo.services.impl;
 
-import java.time.LocalDate;
-import java.util.List;
+import NewLibraryService.LibraryServicedemo.dto.BookDto;
+import NewLibraryService.LibraryServicedemo.entity.Book;
+import NewLibraryService.LibraryServicedemo.entity.User;
+import NewLibraryService.LibraryServicedemo.exception.BookNotFoundException;
+import NewLibraryService.LibraryServicedemo.exception.UserNotFoundException;
+import NewLibraryService.LibraryServicedemo.repositories.BookRepository;
+import NewLibraryService.LibraryServicedemo.repositories.UserRepository;
+import NewLibraryService.LibraryServicedemo.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Entity.Book;
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Entity.User;
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Repository.BookRepository;
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Repository.UserRepository;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
-public class BookService{
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private BookRepository bookRepository;
-	
-    public List<Book> findAll() {
-        return bookRepository.findAll();
-    }
+public class BookServiceImpl implements BookService {
 
-    public Book findById(Long id) {
-        return bookRepository.findById(id).orElse(null);
-    }
+    private Book book;
 
-    public Book save(Book book) {
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Override
+    public Book createBook(BookDto bookDto) {
+        Book book = new Book();
+        book.setTitle(bookDto.getTitle());
+        book.setAuthor(bookDto.getAuthor());
+        book.setIsbnNo(bookDto.getIsbnNo());
         return bookRepository.save(book);
     }
 
-    public void deleteById(Long id) {
+    @Override
+    public List<Book> findAllBooks() {
+        return bookRepository.findAll();
+    }
+
+    @Override
+    public List<Book> searchByName(String bookName) {
+        return bookRepository.findByTitleContains(bookName);
+    }
+
+    public Book getSingleBook(Long id)throws BookNotFoundException{
+        return bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException("Book id not found " + id));
+    }
+
+    public void updateBook(Book book){
+           bookRepository.save(book);
+    }
+
+    public void deleteBook(Long id){
         bookRepository.deleteById(id);
     }
 
+    @Override
     public Book borrowBook(Long bookId, Long userId) {
-        Book book = findById(bookId);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book " + bookId + " does not exists"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User " + userId + " does not exists"));
+
+        if(book!=null && !book.getIsBorrowed() && user!=null){
+            book.setBookCarry(user);
+            book.setBIsBorrowed(true);
+            user.getBorrow().add(book);
+            user.setBorrowDate(new Date());
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(user.getBorrowDate());
+            calendar.add(Calendar.DATE, 7);
+            user.setDueDate(calendar.getTime());
+
+            userRepository.save(user);
+            return bookRepository.save(book);
+        }
+        return null;
+    }
+
+public Book returnBook(Long bookId, Long userId){
+        Book book = bookRepository.findById(bookId).orElse(null);
         User user = userRepository.findById(userId).orElse(null);
 
-        if(user==null || book==null) {
-        	return null;
-        }
-        
-        if("Overdue".equals(user.getRemarks())){
-        	System.out.print("User has overdue books and cannot borrow more");
-        	return null;
-        }
-        
-        if (book != null && !book.isBorrowed() && user != null) {
-            book.setBorrowedBy(user);
-            book.setBorrowed(true);
-            book.setDueDate(LocalDate.now().plusDays(7));
-            return save(book);
-        }
-        // Handle errors (e.g., book not found, book already borrowed, user not found)
-        return null;
-    }
+        if(book!=null && user!=null && book.getIsBorrowed()) {
 
-    public Book returnBook(Long bookId) {
-        Book book = findById(bookId);
-        if (book != null && book.isBorrowed()) {
-            book.setBorrowedBy(null);
-            book.setBorrowed(false);
-            return save(book);
+            if (book.getBookCarry() != null) {
+
+                boolean isLate = new Date().after(user.getDueDate());
+
+                if (isLate) {
+                    user.setLateMark(isLate);
+                }
+
+                user.getBorrow().remove(book);
+
+                book.setBIsBorrowed(false);
+
+                userRepository.save(user);
+
+                return bookRepository.save(book);
+            }
         }
-        // Handle errors (e.g., book not found, book not borrowed)
         return null;
-    }
-    
-    public void overDueBook() {
-    	List<Book> books = bookRepository.findAll();
-    	for(Book book: books) {
-    		if(book.isBorrowed() && book.getDueDate().isBefore(LocalDate.now())) {
-    			User user = book.getBorrowedBy();
-    			if(user!=null) {
-    				user.setRemarks("Overdue");
-    				userRepository.save(user);
-    			}
-    		}
-    	}
-    }
-    
 }
+
+}
+
+
