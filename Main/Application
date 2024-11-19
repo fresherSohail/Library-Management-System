@@ -1,17 +1,13 @@
-package com.LibraryManagmentSystem.LibraryManagmentSystem;
+package NewLibraryService.LibraryServicedemo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-@RestController
-@RequestMapping("/user")
-public class LibraryManagmentSystemApplication {
+public class LibraryServicedemoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LibraryManagmentSystemApplication.class, args);
+		SpringApplication.run(LibraryServicedemoApplication.class, args);
 	}
 
 }
