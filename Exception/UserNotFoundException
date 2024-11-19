@@ -1,0 +1,11 @@
+package NewLibraryService.LibraryServicedemo.exception;
+
+import NewLibraryService.LibraryServicedemo.dto.UserDto;
+
+public class UserNotFoundException extends RuntimeException{
+
+    public UserNotFoundException(String message){
+        super(message);
+    }
+
+}
