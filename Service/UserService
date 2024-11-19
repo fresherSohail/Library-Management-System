@@ -1,0 +1,20 @@
+package NewLibraryService.LibraryServicedemo.services.impl;
+
+
+import NewLibraryService.LibraryServicedemo.dto.UserDto;
+import NewLibraryService.LibraryServicedemo.entity.Book;
+import NewLibraryService.LibraryServicedemo.entity.User;
+import NewLibraryService.LibraryServicedemo.exception.UserNotFoundException;
+
+import java.util.List;
+
+public interface UserService {
+   List<User> findAllUser();
+   User createUser(UserDto userDto);
+   void deleteUserById(Long id);
+   User updateUser(Long id,User user);
+   User getUser(Long id) throws UserNotFoundException;
+   List<User> searchByUser(String name);
+   List<Book> getUserBorrowedBook(Long userId);
+   User save(User user);
+}
