@@ -1,9 +1,11 @@
-package com.LibraryManagmentSystem.LibraryManagmentSystem.Repository;
+package NewLibraryService.LibraryServicedemo.repositories;
 
+import NewLibraryService.LibraryServicedemo.entity.Book;
+import NewLibraryService.LibraryServicedemo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Entity.User;
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long>{
+    List<User> findByNameContains(String name);
 }
