@@ -1,25 +1,80 @@
-package com.LibraryManagmentSystem.LibraryManagmentSystem.Service;
+package NewLibraryService.LibraryServicedemo.services.impl;
 
-import java.util.*;
-
+import NewLibraryService.LibraryServicedemo.dto.UserDto;
+import NewLibraryService.LibraryServicedemo.entity.Book;
+import NewLibraryService.LibraryServicedemo.entity.User;
+import NewLibraryService.LibraryServicedemo.exception.UserNotFoundException;
+import NewLibraryService.LibraryServicedemo.repositories.BookRepository;
+import NewLibraryService.LibraryServicedemo.repositories.UserRepository;
+import NewLibraryService.LibraryServicedemo.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Entity.User;
-import com.LibraryManagmentSystem.LibraryManagmentSystem.Repository.UserRepository;
+import javax.swing.text.html.Option;
+import java.time.temporal.TemporalQueries;
+import java.util.*;
 
 @Service
-public class UserService {
+public class UserServiceImp implements UserService {
 
-	@Autowired
-	private UserRepository userRepository;
-	
-	public List<User> findAllUser(){
-		return userRepository.findAll();
-	}
-	
-	public User save(User user) {
-		return userRepository.save(user);
-	}
+    @Autowired
+    private BookService bookService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
+
+    public List<User> findAllUser() {
+        return userRepository.findAll();
+    }
+
+    public User createUser(UserDto userDto) {
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setPhoneNo(userDto.getPhoneNo());
+        user.setAddress(userDto.getAddress());
+        user.setAge(userDto.getAge());
+        return userRepository.save(user);
+    }
+
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public User updateUser(Long id, User userDetails) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setName(userDetails.getName());
+            user.setPhoneNo(userDetails.getPhoneNo());
+            user.setAge(userDetails.getAge());
+            user.setAddress(userDetails.getAddress());
+            return userRepository.save(user);
+        }
+        throw new RuntimeException("User not found id: " + id);
+    }
+
+    public User getUser(Long id) throws UserNotFoundException {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with this: " + id));
+    }
+
+    public List<User> searchByUser(String name) {
+        return userRepository.findByNameContains(name);
+    }
+
+    public User save(User user){
+       return userRepository.save(user);
+    }
+
+    public List<Book> getUserBorrowedBook(Long userId){
+        User user = userRepository.findById(userId).orElse(null);
+        if(user!=null){
+            return user.getBorrow();
+        }else{
+            return Collections.emptyList();
+        }
+    }
 
 }
