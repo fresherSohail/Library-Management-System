@@ -1,89 +1,89 @@
-package com.LibraryManagmentSystem.LibraryManagmentSystem.Entity;
+package NewLibraryService.LibraryServicedemo.entity;
 
-import java.time.LocalDate;
-import java.util.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
-public class Book {
+public class Book{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+    private String author;
+    private String isbnNo;
+    private boolean isBorrowed;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String title;
-	private String author;
-	private boolean borrowed;
-	private LocalDate dueDate;
-	
-     @ManyToOne
-     @JoinColumn(name="user_id")
-	 private User borrowedBy;
-	
-	public Book() {
-		
-	}
-	
-	public Book(String title, String author, LocalDate dueDate) {
-		super();
-		this.title = title;
-		this.author = author;
-		this.borrowed = false;
-		this.dueDate = dueDate;
-	}
+    @ManyToOne()
+    @JsonBackReference
+    private User bookCarry;
 
-	public Long getBookId() {
-		return id;
-	}
+    public Book(){}
 
-	public void setBookId(Long id) {
-		this.id = id;
-	}
+    public Book(Long id, String title, String author, String isbnNo, boolean isBorrowed, User bookCarry) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbnNo = isbnNo;
+        this.isBorrowed = isBorrowed;
+        this.bookCarry = bookCarry;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public Book(String title, String author, String isbnNo, boolean isBorrowed, User bookCarry) {
+        this.title = title;
+        this.author = author;
+        this.isbnNo = isbnNo;
+        this.isBorrowed = isBorrowed;
+        this.bookCarry = bookCarry;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getAuthor() {
-		return author;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-	
-	public void setBorrowed(boolean borrowed) {
-		this.borrowed = borrowed;
-	}
-	
-	public boolean isBorrowed() {
-		return borrowed;
-	}
-	
-	public User getBorrowedBy() {
-		return borrowedBy;
-	}
-	
-	public void setBorrowedBy(User borrowedBy) {
-		this.borrowedBy = borrowedBy;
-	}
-	
-	public LocalDate getDueDate() {
-		return dueDate;
-	}
-	
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = dueDate;
-	}
-	
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getIsbnNo() {
+        return isbnNo;
+    }
+
+    public void setIsbnNo(String isbnNo) {
+        this.isbnNo = isbnNo;
+    }
+
+    public User getBookCarry() {
+        return bookCarry;
+    }
+
+    public void setBookCarry(User bookCarry) {
+        this.bookCarry = bookCarry;
+    }
+
+    public boolean getIsBorrowed(){
+        return isBorrowed;
+    }
+
+    public void setBIsBorrowed(boolean isBorrowed){
+        this.isBorrowed = isBorrowed;
+    }
 }
