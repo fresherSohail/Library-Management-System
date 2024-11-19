@@ -1,0 +1,20 @@
+package NewLibraryService.LibraryServicedemo.services;
+
+
+
+import NewLibraryService.LibraryServicedemo.dto.BookDto;
+import NewLibraryService.LibraryServicedemo.entity.Book;
+import NewLibraryService.LibraryServicedemo.exception.BookNotFoundException;
+
+import java.util.List;
+
+public interface BookService {
+    Book createBook(BookDto bookDto);
+    List<Book> findAllBooks();
+    List<Book> searchByName(String bookName);
+    Book getSingleBook(Long id) throws BookNotFoundException;
+    void updateBook(Book book);
+    void deleteBook(Long id);
+    Book borrowBook(Long bookId, Long userId);
+    Book returnBook(Long bookId, Long userId);
+}
